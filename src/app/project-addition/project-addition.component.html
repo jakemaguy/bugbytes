@@ -1,0 +1,25 @@
+<div class="container">
+    <h1 class="mat-h1">Add Project Wizard</h1>
+    <form class="example-container">
+        <mat-form-field appearance="fill">
+            <mat-label>Project Name</mat-label>
+            <input matInput [formControl]="projectName">
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Category</mat-label>
+            <input matInput [formControl]="projectCategory">
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Access</mat-label>
+            <mat-select [formControl]="projectAccess">
+              <mat-option value="private">Private</mat-option>
+              <mat-option value="limited">Limited</mat-option>
+              <mat-option value="open">Open</mat-option>
+            </mat-select>
+          </mat-form-field>
+    </form>
+    <button mat-button color="basic" routerLink='/'>Cancel</button>
+    <button mat-raised-button color="primary" (click)="sumbitResults()">Add Project</button>
+</div>
