@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ComponentFactoryResolver } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { ProjectListDataSource, ProjectListItem } from './project-list-datasource';
-import { ProjectAdministrationService } from '../project-administration.service';
-import { Subscription }   from 'rxjs';
+import { ProjectListDataSource } from './project-list-datasource';
+import { ProjectAdministrationService, Project } from '../project-administration.service';
 
 @Component({
   selector: 'app-project-list',
@@ -14,35 +13,28 @@ import { Subscription }   from 'rxjs';
 export class ProjectListComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<ProjectListItem>;
+  @ViewChild(MatTable) table: MatTable<Project>;
   dataSource: ProjectListDataSource;
-  project: any;
-  subscription: Subscription;
+
+  projects: Project[];
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['id', 'name'];
-  noProjects = true;
+  displayedColumns = ['name', 'category', 'access'];
+  noProjects = false;
 
-  constructor(private projectService: ProjectAdministrationService) {
-    this.subscription = projectService.projectStream$.subscribe(
-      project => {
-        this.project = {
-          name: project.name,
-          category: project.category,
-          access: project.access
-        };
-        console.log(`from project list component: ${this.project.name}`)
-      });
-  }
+  constructor(private projectService: ProjectAdministrationService) { }
+  
   ngOnInit() {
-    this.dataSource = new ProjectListDataSource();
+    this.projectService.getProjects()
+    .subscribe((result: Project[]) => {
+      this.projects = result;
+      this.dataSource.data = result;
+    });
   }
 
   ngAfterViewInit() {
-    if (this.noProjects !== true) {
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-      this.table.dataSource = this.dataSource;
-    }
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProjectAdministrationService } from '../project-administration.service';
 
 @Component({
@@ -12,20 +13,20 @@ export class ProjectAdditionComponent implements OnInit {
   projectCategory = new FormControl('');
   projectAccess = new FormControl('');
   
-  constructor(private projectService: ProjectAdministrationService) { }
+  constructor(
+    private projectService: ProjectAdministrationService,
+    private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  sumbitResults() {
-    console.log(this.projectName.value);
-    console.log(this.projectCategory.value);
-    console.log(this.projectAccess.value);
-    this.projectService.submitProject({
+  addProject() {
+    this.projectService.addProject({
       name: this.projectName.value,
       category: this.projectCategory.value,
       access: this.projectAccess.value
     });
+    this.router.navigate(['/']);
   }
 
 }
